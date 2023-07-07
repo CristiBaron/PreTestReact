@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link
+      rel="icon"
+      href="img/sun-glasses.png"
+      sizes="any"
+      type="image/svg+xml"
+    />
+    <title>Pokedex</title>
+  </head>
+  <body class="bg-gray-100">
+    <div
+      class="flex flex-col justify-center items-center h-screen bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-red-100 via-cyan-400 to-zinc-100"
+    >
+      <img src="img/sun-glasses.png" alt="" class="w-64" />
+      <img src="img/pokemon-battle.png" class="w-80" alt="" srcset="" />
+      <div class="container mx-auto p-4 mt-10">
+        <div class="flex justify-center">
+          <input
+            type="text"
+            id="search-input"
+            class="w-64 px-4 py-2 mr-2 rounded-md text-center border-2 hover:border-cyan-400 hover:bg-gray-100"
+            placeholder="Search Pokemon"
+          />
+          <button
+            id="search-button"
+            class="px-4 py-2 bg-cyan-600 text-white rounded-md bg hover:bg-cyan-500"
+          >
+            Cerca
+          </button>
+        </div>
+        <div id="pokemon-info" class="mt-8"></div>
+      </div>
+    </div>
+
+    <script>
+      const searchInput = document.getElementById("search-input");
+      const searchButton = document.getElementById("search-button");
+      const pokemonInfo = document.getElementById("pokemon-info");
+
+      searchButton.addEventListener("click", () => {
+        const pokemonName = searchInput.value.toLowerCase();
+        getPokemonData(pokemonName);
+      });
+
+      function getPokemonData(pokemonName) {
+        fetch(`https://pokeapi.co/api/v2/pokemon/${pokemonName}`)
+          .then((response) => {
+            if (!response.ok) {
+              throw new Error("Pokemon non trovato");
+            }
+            return response.json();
+          })
+          .then((data) => {
+            displayPokemonData(data);
+          })
+          .catch((error) => {
+            displayErrorMessage(error.message);
+          });
+      }
+
+      function displayPokemonData(pokemonData) {
+        const pokemonName = pokemonData.name;
+        const pokemonId = pokemonData.id;
+        const pokemonAbilities = pokemonData.abilities
+          .map((ability) => ability.ability.name)
+          .join(", ");
+        const pokemonTypes = pokemonData.types
+          .map((type) => type.type.name)
+          .join(", ");
+        const pokemonHeight = pokemonData.height;
+        const pokemonWeight = pokemonData.weight;
+
+        pokemonInfo.innerHTML = `
+        <div class="bg-white shadow-md rounded-lg p-6">
+            <h2 class="text-2xl font-bold mb-4">${capitalizeFirstLetter(
+              pokemonName
+            )}</h2>
+            <p><span class="font-bold">ID:</span> ${pokemonId}</p>
+            <p><span class="font-bold">Abilities:</span> ${pokemonAbilities}</p>
+            <p><span class="font-bold">Types:</span> ${pokemonTypes}</p>
+            <p><span class="font-bold">Height:</span> ${pokemonHeight}</p>
+            <p><span class="font-bold">Weight:</span> ${pokemonWeight}</p>
+        </div>
+    `;
+      }
+
+      function displayErrorMessage(errorMessage) {
+        pokemonInfo.innerHTML = `
+        <div class="bg-red-500 text-white p-4 rounded-lg">${errorMessage}</div>
+    `;
+      }
+
+      function capitalizeFirstLetter(string) {
+        return string.charAt(0).toUpperCase() + string.slice(1);
+      }
+    </script>
+  </body>
+</html>

@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link
+      rel="icon"
+      href="img/sun-glasses.png"
+      sizes="any"
+      type="image/svg+xml"
+    />
+    <title>Order students</title>
+  </head>
+  <body class="p-4">
+    <div
+      class="h-screen flex flex-col items-center justify-center gap-4 bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-red-100 via-cyan-400 to-zinc-100"
+    >
+      <img src="img/sun-glasses.png" alt="" class="w-64" />
+      <div
+        id="students-container"
+        class="space-y-2 w-1/3 items-center justify-center text-center"
+      ></div>
+
+      <div class="flex space-x-4 w-1/3 items-center justify-center p-3">
+        <button
+          id="best-btn"
+          class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded p-4 w-1/2"
+        >
+          Sort by best
+        </button>
+        <button
+          id="worst-btn"
+          class="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded p-4 w-1/2"
+        >
+          Sort by worst
+        </button>
+      </div>
+    </div>
+
+    <script>
+      const studentsData = [
+        { id: 1, fullname: "Mario Rossi", avg: 6 },
+        { id: 2, fullname: "Luigi Verdi", avg: 4 },
+        { id: 3, fullname: "Peach Pink", avg: 8 },
+        { id: 4, fullname: "Wario Rossi", avg: 9 },
+      ];
+
+      function renderStudents(students) {
+        const container = document.getElementById("students-container");
+        container.innerHTML = "";
+
+        students.forEach((student) => {
+          const studentElement = document.createElement("div");
+          studentElement.className =
+            "bg-cyan-100/30 text-white p-4 rounded border-2 hover:border-cyan-400 hover:bg-gray-50 hover:text-cyan-400";
+          studentElement.textContent = ` Nome: ${student.fullname},  Media: ${student.avg},  ID: ${student.id}`;
+
+          container.appendChild(studentElement);
+        });
+      }
+
+      function sortStudentsByBest() {
+        const sortedStudents = [...studentsData].sort((a, b) => b.avg - a.avg);
+        renderStudents(sortedStudents);
+      }
+
+      function sortStudentsByWorst() {
+        const sortedStudents = [...studentsData].sort((a, b) => a.avg - b.avg);
+        renderStudents(sortedStudents);
+      }
+
+      document
+        .getElementById("best-btn")
+        .addEventListener("click", sortStudentsByBest);
+      document
+        .getElementById("worst-btn")
+        .addEventListener("click", sortStudentsByWorst);
+
+      renderStudents(studentsData);
+    </script>
+  </body>
+</html>
